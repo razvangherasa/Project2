@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="server.api.CardControllerTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2023-03-09T20:04:08" hostname="RAZVAN" time="0.122">
+  <properties/>
+  <testcase name="getCardInvalidId()" classname="server.api.CardControllerTest" time="0.094"/>
+  <testcase name="addValid()" classname="server.api.CardControllerTest" time="0.001"/>
+  <testcase name="addEmptyTitle()" classname="server.api.CardControllerTest" time="0.001"/>
+  <testcase name="addDatabaseIsUsed()" classname="server.api.CardControllerTest" time="0.005"/>
+  <testcase name="getAllCards()" classname="server.api.CardControllerTest" time="0.002"/>
+  <testcase name="addNullTitle()" classname="server.api.CardControllerTest" time="0.002"/>
+  <testcase name="addInvalidId()" classname="server.api.CardControllerTest" time="0.001"/>
+  <testcase name="getCardTest()" classname="server.api.CardControllerTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

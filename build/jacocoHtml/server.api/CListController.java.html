@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CListController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">server.api</a> &gt; <span class="el_source">CListController.java</span></div><h1>CListController.java</h1><pre class="source lang-java linenums">package server.api;
+
+import commons.Board;
+import commons.CList;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import server.database.BoardRepository;
+import server.database.CListRepository;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/api/lists&quot;)
+public class CListController {
+    private final CListRepository listRepo;
+    private final BoardRepository boardRepo;
+
+    /**
+     * Constructor for the CListController class
+     * @param listRepo the repository (database interface for the CList class)
+     * @param boardRepo the repository (database interface for the Board class)
+     */
+<span class="fc" id="L23">    public CListController(CListRepository listRepo, BoardRepository boardRepo) {</span>
+<span class="fc" id="L24">        this.listRepo = listRepo;</span>
+<span class="fc" id="L25">        this.boardRepo = boardRepo;</span>
+<span class="fc" id="L26">    }</span>
+
+    /**
+     * Endpoint for adding a new list to a board.
+     * @param boardId ID of the board the CList is being added to
+     * @param title title of the list being added
+     *
+     * @return the list added
+     */
+    @PostMapping(path = { &quot;/add/{boardId}/{title}&quot;,})
+    public ResponseEntity&lt;CList&gt; add(@PathVariable(&quot;boardId&quot;) long boardId, @PathVariable(&quot;title&quot;) String title) {
+<span class="pc bpc" id="L37" title="2 of 4 branches missed.">        if (boardId &lt; 0 || !boardRepo.existsById(boardId)) {</span>
+<span class="nc" id="L38">            return ResponseEntity.badRequest().build();</span>
+        }
+<span class="fc" id="L40">        Board parentBoard = boardRepo.findById(boardId).get();</span>
+<span class="pc bpc" id="L41" title="2 of 4 branches missed.">        if(title == null || title.length() == 0){</span>
+<span class="nc" id="L42">            return ResponseEntity.badRequest().build();</span>
+        }
+
+<span class="fc" id="L45">        CList list = new CList(title);</span>
+
+<span class="fc" id="L47">        parentBoard.list.add(list);</span>
+
+<span class="fc" id="L49">        listRepo.save(list);</span>
+
+<span class="fc" id="L51">        boardRepo.save(parentBoard);</span>
+
+<span class="fc" id="L53">        return ResponseEntity.ok(list);</span>
+    }
+
+    /**
+     * Endpoint for retrieving all CLists belonging to a certain board, specified by ID
+     * @param id ID of the board whose lists are being retrieved
+     * @return the list of CLists
+     */
+    @GetMapping(&quot;/get/{boardId}&quot;)
+    public ResponseEntity&lt;List&lt;CList&gt;&gt; getLists(@PathVariable(&quot;boardId&quot;) long id) {
+<span class="nc bnc" id="L63" title="All 4 branches missed.">        if (id &lt; 0 || !boardRepo.existsById(id)) {</span>
+<span class="nc" id="L64">            return ResponseEntity.badRequest().build();</span>
+        }
+
+<span class="nc" id="L67">        return ResponseEntity.ok(boardRepo.findById(id).get().list);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

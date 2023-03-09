@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QuoteController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">server.api</a> &gt; <span class="el_source">QuoteController.java</span></div><h1>QuoteController.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2021 Delft University of Technology
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package server.api;
+
+import java.util.List;
+import java.util.Random;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import commons.Quote;
+import server.database.QuoteRepository;
+
+@RestController
+@RequestMapping(&quot;/api/quotes&quot;)
+public class QuoteController {
+
+    private final Random random;
+    private final QuoteRepository repo;
+
+    /**
+     * Constructor of the QuoteController class
+     * @param random the Random object
+     * @param repo the Quote repository interface
+     */
+<span class="nc" id="L44">    public QuoteController(Random random, QuoteRepository repo) {</span>
+<span class="nc" id="L45">        this.random = random;</span>
+<span class="nc" id="L46">        this.repo = repo;</span>
+<span class="nc" id="L47">    }</span>
+
+    /**
+     * Endpoint for returning all the quotes in the database
+     * @return list of all the quotes
+     */
+    @GetMapping(path = { &quot;&quot;, &quot;/&quot; })
+    public List&lt;Quote&gt; getAll() {
+<span class="nc" id="L55">        return repo.findAll();</span>
+    }
+
+    /**
+     * Endpoint for getting a single quote by its ID
+     * @param id id of the quote
+     * @return the HTTP response
+     */
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Quote&gt; getById(@PathVariable(&quot;id&quot;) long id) {
+<span class="nc bnc" id="L65" title="All 4 branches missed.">        if (id &lt; 0 || !repo.existsById(id)) {</span>
+<span class="nc" id="L66">            return ResponseEntity.badRequest().build();</span>
+        }
+<span class="nc" id="L68">        return ResponseEntity.ok(repo.findById(id).get());</span>
+    }
+
+    /**
+     * Endpoint for adding a new quote to the database
+     * @param quote the quote object to be added
+     * @return the HTTP response
+     */
+    @PostMapping(path = { &quot;&quot;, &quot;/&quot; })
+    public ResponseEntity&lt;Quote&gt; add(@RequestBody Quote quote) {
+
+<span class="nc bnc" id="L79" title="All 6 branches missed.">        if (quote.person == null || isNullOrEmpty(quote.person.firstName) || isNullOrEmpty(quote.person.lastName)</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">                || isNullOrEmpty(quote.quote)) {</span>
+<span class="nc" id="L81">            return ResponseEntity.badRequest().build();</span>
+        }
+
+<span class="nc" id="L84">        Quote saved = repo.save(quote);</span>
+<span class="nc" id="L85">        return ResponseEntity.ok(saved);</span>
+    }
+
+    /**
+     * Utility method for checking whether a filed is null or empty
+     * @param s the field to check
+     * @return whether the field is null or empty
+     */
+    private static boolean isNullOrEmpty(String s) {
+<span class="nc bnc" id="L94" title="All 4 branches missed.">        return s == null || s.isEmpty();</span>
+    }
+
+    /**
+     * Endpoint for getting a random quote
+     * @return the HTTP response
+     */
+    @GetMapping(&quot;rnd&quot;)
+    public ResponseEntity&lt;Quote&gt; getRandom() {
+<span class="nc" id="L103">        var quotes = repo.findAll();</span>
+<span class="nc" id="L104">        var idx = random.nextInt((int) repo.count());</span>
+<span class="nc" id="L105">        return ResponseEntity.ok(quotes.get(idx));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
